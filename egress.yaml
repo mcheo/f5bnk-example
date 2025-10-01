@@ -8,7 +8,7 @@ spec:
   egressSnatpool: snat-tenant
   pseudoCNIConfig:
     namespaces:
-      - tenant
+      - tenant2
     appPodInterface: eth0
     vxlan:
       create: true
