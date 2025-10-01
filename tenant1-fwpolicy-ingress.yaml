@@ -1,0 +1,21 @@
+apiVersion: "k8s.f5net.com/v1"
+kind: F5BigFwPolicy
+metadata:
+  name: tenant1-firewallpolicy-gateway
+  # firewall policy must be applied in same namespace as resource specified in targetRefs
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    name: tenant1-http-gateway-nginx
+    kind: Gateway
+  rule:
+  - name: sc-rule-tcp-ingress-1
+    ipProtocol: any
+    source:
+      addresses:
+      - 10.176.10.20/32
+    destination:
+      addresses:
+      - 10.176.12.200/32
+    logging: true
+    action: drop
