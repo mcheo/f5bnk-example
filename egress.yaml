@@ -1,0 +1,16 @@
+---
+apiVersion: k8s.f5net.com/v3
+kind: F5SPKEgress
+metadata:
+  name: egress-tenant
+spec:
+  snatType: SRC_TRANS_SNATPOOL
+  egressSnatpool: snat-tenant
+  pseudoCNIConfig:
+    namespaces:
+      - tenant
+    appPodInterface: eth0
+    vxlan:
+      create: true
+      tmmInterfaceName: sf-internal
+      key: 101

@@ -1,0 +1,9 @@
+apiVersion: "k8s.f5net.com/v1"
+kind: F5SPKStaticRoute
+metadata:
+  name: tenant2-egress-ipify-staticroute-ipv4
+spec:
+  destination: 104.26.13.205
+  prefixLen: 24
+  type: gateway
+  gateway: 10.176.12.1

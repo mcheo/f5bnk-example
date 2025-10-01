@@ -1,0 +1,34 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: tenant1-http-gateway-nginx
+  namespace: tenant1
+spec:
+  addresses:
+  - type: "IPAddress"
+    value: 10.176.12.200
+  gatewayClassName: f5-gateway-class
+  listeners:
+  - name: http-listener
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: "All"
+      kinds:
+      - kind: HTTPRoute
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: l7-http-app-nginx
+  namespace: tenant1
+spec:
+  parentRefs:
+  - name: tenant1-http-gateway-nginx
+    sectionName: http-listener
+  rules:
+  - backendRefs:
+    - name: nginx-app-svc
+      namespace: tenant1
+      port: 8080

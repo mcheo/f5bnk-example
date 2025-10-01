@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vllm-app
+  name: vllm
+  namespace: tenant2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: vllm-app
+    spec:
+      containers:
+      - command:
+        - python3
+        - -m
+        - vllm.entrypoints.openai.api_server
+        - --model
+        - Qwen/Qwen2.5-1.5B-Instruct-AWQ
+        - quantization=awq
+        - --max-model-len=2048
+        - --gpu-memory-utilization=0.3
+        - --trust-remote-code
+        image: vllm/vllm-openai:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 240
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: vllm-openai
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 240
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            nvidia.com/gpu: "2"
+          requests:
+            nvidia.com/gpu: "2"
+        volumeMounts:
+        - mountPath: /root/.cache/huggingface
+          name: cache-volume
+      volumes:
+      - emptyDir: {}
+        name: cache-volume
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vllm-app
+  name: vllm-openai-svc
+  namespace: tenant2
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: vllm-app
+  type: ClusterIP

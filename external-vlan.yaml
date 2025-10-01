@@ -1,0 +1,13 @@
+apiVersion: "k8s.f5net.com/v1"
+kind: F5SPKVlan
+metadata:
+  name: sf-external
+spec:
+  name: sf-external
+  interfaces:
+    - "1.1"
+  tag: 120
+  selfip_v4s:
+    - 10.176.12.11
+  prefixlen_v4: 24
+  auto_lasthop: "AUTO_LASTHOP_ENABLED"

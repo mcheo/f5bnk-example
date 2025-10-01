@@ -1,0 +1,9 @@
+---
+apiVersion: "k8s.f5net.com/v1"
+kind: F5SPKSnatpool
+metadata:
+  name: "snat-tenant"
+spec:
+  name: "snat-tenant"
+  addressList:
+    - - 10.176.12.206

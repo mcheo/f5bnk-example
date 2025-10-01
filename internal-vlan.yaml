@@ -1,0 +1,15 @@
+apiVersion: "k8s.f5net.com/v1"
+kind: F5SPKVlan
+metadata:
+  name: sf-internal
+  namespace: f5-bnk
+spec:
+  name: sf-internal
+  interfaces:
+    - "1.2"
+  tag: 0
+  selfip_v4s:
+    - 10.176.13.11
+  prefixlen_v4: 24
+  auto_lasthop: "AUTO_LASTHOP_ENABLED"
+  internal: true

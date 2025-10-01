@@ -1,0 +1,23 @@
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-cross-ns-tenant2
+  namespace: tenant2
+spec:
+  selector: all()
+  ingress:
+    - action: Allow
+      source:
+        namespaceSelector: projectcalico.org/name == 'f5-bnk'
+    - action: Allow
+      source:
+        namespaceSelector: projectcalico.org/name == 'tenant2'
+    - action: Allow
+      source:
+        nets:
+          - 10.176.0.0/16
+  egress:
+    - action: Allow
+  types:
+    - Ingress
+    - Egress
